@@ -14,7 +14,8 @@ import com.correios.edwinos.consultacorreios.util.list.ListAdapter;
 public class MainActivity extends ListActivity {
     protected ItemListModel preAdded;
 
-    public static final int INSET_ACTION = 1;
+    public static final int INSERT_ACTION = 1;
+    public static final int VERIFY_ACTION = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class MainActivity extends ListActivity {
         int id = item.getItemId();
 
         if(id == R.id.action_add){
-            startActivityForResult(new Intent("com.correios.edwinos.consultacorreios.InsertActivity"), MainActivity.INSET_ACTION);
+            startActivityForResult(new Intent("com.correios.edwinos.consultacorreios.InsertActivity"), MainActivity.INSERT_ACTION);
         }
 
         return super.onOptionsItemSelected(item);
@@ -59,18 +60,31 @@ public class MainActivity extends ListActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
 
         switch (requestCode) {
-            case INSET_ACTION:
+            case INSERT_ACTION:
                 if(resultCode == RESULT_OK) {
                     this.preAdded = new ItemListModel(data.getStringExtra("code"), data.getStringExtra("name"));
                     this.verifyCode(this.preAdded.getCode());
+                }
+            break;
+            case VERIFY_ACTION:
+                if(resultCode == RESULT_OK) {
+                    Toast.makeText(this, data.getStringExtra("response"), Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(this, "Falhou", Toast.LENGTH_SHORT).show();
                 }
             break;
         }
     }
 
     protected void verifyCode(String code){
-
         Toast.makeText(this, "Codigo: "+ code, Toast.LENGTH_SHORT).show();
+
+        Intent requestIntent = new Intent("com.correios.edwinos.consultacorreios.RequestActivity");
+        requestIntent.putExtra("code", code);
+
+        startActivityForResult(requestIntent, MainActivity.VERIFY_ACTION);
+
 
     }
 }
