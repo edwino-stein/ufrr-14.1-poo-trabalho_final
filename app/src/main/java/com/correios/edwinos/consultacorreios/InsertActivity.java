@@ -11,11 +11,19 @@ import android.widget.Toast;
 
 
 public class InsertActivity extends Activity {
-
+    protected static int debugCouter = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert);
+
+        /** DEBUB **/
+        ((EditText) findViewById(R.id.frendlyName)).setText("VALOR DE DEBUB #"+(this.debugCouter++));
+        EditText codeObj = (EditText) findViewById(R.id.codeObj);
+        codeObj.setText("DF959840044BR");
+        codeObj.setSelectAllOnFocus(true);
+        codeObj.requestFocus();
+        /***********/
     }
 
 
@@ -67,11 +75,13 @@ public class InsertActivity extends Activity {
          * TODO: Fazer a validação do codigo de objeto
          */
 
+        return true;
+        /*
         if(code.length() == 3) {
             return true;
         }
         else{
             return false;
-        }
+        }*/
     }
 }
