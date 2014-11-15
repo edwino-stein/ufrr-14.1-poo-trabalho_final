@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.correios.edwinos.consultacorreios.util.json.JsonParser;
 import com.correios.edwinos.consultacorreios.util.list.ItemListModel;
 import com.correios.edwinos.consultacorreios.util.list.ListAdapter;
 
@@ -67,18 +68,39 @@ public class MainActivity extends ListActivity {
                 }
             break;
             case VERIFY_ACTION:
+
+                /**
+                 * TODO: Fazer uma caixa de dialogo
+                 */
+
                 if(resultCode == RESULT_OK) {
-                    Toast.makeText(this, data.getStringExtra("response"), Toast.LENGTH_SHORT).show();
+                    JsonParser jsonResponse = new JsonParser(data.getStringExtra("response"));
+
+                    if(!jsonResponse.isSuccess()){
+                        Toast.makeText(this, jsonResponse.getMessage(), Toast.LENGTH_LONG).show();
+                        this.preAdded = null;
+                        break;
+                    }
+
+                    if (jsonResponse.getTotal() <= 0){
+                        Toast.makeText(this, "Vazio", Toast.LENGTH_SHORT).show();
+                        this.preAdded = null;
+                        break;
+                    }
+
+                    ((ListAdapter) this.getListAdapter()).add(this.preAdded);
                 }
                 else{
-                    Toast.makeText(this, "Falhou", Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(this, "A comunicação com o servidor falhou.\nVerifique se você está conectado a internet.", Toast.LENGTH_LONG).show();
                 }
+
+                this.preAdded = null;
             break;
         }
     }
 
     protected void verifyCode(String code){
-        Toast.makeText(this, "Codigo: "+ code, Toast.LENGTH_SHORT).show();
 
         Intent requestIntent = new Intent("com.correios.edwinos.consultacorreios.RequestActivity");
         requestIntent.putExtra("code", code);
