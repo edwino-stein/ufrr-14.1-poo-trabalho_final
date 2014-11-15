@@ -1,6 +1,8 @@
 package com.correios.edwinos.consultacorreios;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -69,35 +71,33 @@ public class MainActivity extends ListActivity {
             break;
             case VERIFY_ACTION:
 
-                /**
-                 * TODO: Fazer uma caixa de dialogo
-                 */
-
                 if(resultCode == RESULT_OK) {
                     JsonParser jsonResponse = new JsonParser(data.getStringExtra("response"));
 
                     if(!jsonResponse.isSuccess()){
-                        Toast.makeText(this, jsonResponse.getMessage(), Toast.LENGTH_LONG).show();
                         this.preAdded = null;
-                        break;
+                        this.showErrorDialog("Houve um problema na consulta", jsonResponse.getMessage());
                     }
+                    else if (jsonResponse.getTotal() <= 0){
+                        this.showDataEmptyDialog();
 
-                    if (jsonResponse.getTotal() <= 0){
-                        Toast.makeText(this, "Vazio", Toast.LENGTH_SHORT).show();
-                        this.preAdded = null;
-                        break;
+                    }else {
+                        this.confirmAdd();
                     }
-
-                    ((ListAdapter) this.getListAdapter()).add(this.preAdded);
                 }
                 else{
-
-                    Toast.makeText(this, "A comunicação com o servidor falhou.\nVerifique se você está conectado a internet.", Toast.LENGTH_LONG).show();
+                    this.preAdded = null;
+                    this.showErrorDialog("Houve um problema na consulta", "A comunicação com o servidor falhou.\n\nVerifique se você está conectado a internet.");
                 }
 
-                this.preAdded = null;
+
             break;
         }
+    }
+
+    public void confirmAdd(){
+        ((ListAdapter) this.getListAdapter()).add(this.preAdded);
+        this.preAdded = null;
     }
 
     protected void verifyCode(String code){
@@ -106,7 +106,34 @@ public class MainActivity extends ListActivity {
         requestIntent.putExtra("code", code);
 
         startActivityForResult(requestIntent, MainActivity.VERIFY_ACTION);
+    }
 
 
+    protected void showDataEmptyDialog(){
+        new AlertDialog.Builder(this).setTitle("Nenhuma informação sobre o objeto")
+                                     .setMessage("Nenhuma informação sobre o rastreamento do objeto foi encontrada pelos correios.\nÉ possivel que o objeto ainda não tenha entrado no sistema dos correios.\n\nDeseja mesmo assim adiciona-lo a lista?")
+                                     .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            confirmAdd();
+                                        }
+                                     })
+                                     .setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                                         public void onClick(DialogInterface dialog, int which) {
+                                             preAdded = null;
+                                             dialog.cancel();
+                                         }
+                                     })
+                                     .show();
+    }
+
+    protected void showErrorDialog(String title, String textBody){
+        new AlertDialog.Builder(this).setTitle(title)
+                                     .setMessage(textBody)
+                                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                         public void onClick(DialogInterface dialog, int which) {
+                                             dialog.cancel();
+                                         }
+                                     })
+                                     .show();
     }
 }
