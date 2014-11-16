@@ -71,6 +71,13 @@ public class MainActivity extends ListActivity {
 
         if(id == R.id.action_add){
             startActivityForResult(new Intent("com.correios.edwinos.consultacorreios.InsertActivity"), MainActivity.INSERT_ACTION);
+            return true;
+        }
+
+        if(id == R.id.action_reset){
+            this.correiosObjectsData.clearAll();
+            ((ListAdapter) this.getListAdapter()).clear();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

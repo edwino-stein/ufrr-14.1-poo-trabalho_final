@@ -9,9 +9,14 @@
         android:showAsAction="ifRoom"
     />
     <item
+        android:id="@+id/action_reset"
+        android:title="Limpar Lista"
+        android:showAsAction="collapseActionView"
+    />
+    <item
         android:id="@+id/action_about"
         android:title="Sobre"
         android:icon="@drawable/ic_action_about"
-        android:showAsAction="ifRoom"
+        android:showAsAction="collapseActionView"
     />
 </menu>
