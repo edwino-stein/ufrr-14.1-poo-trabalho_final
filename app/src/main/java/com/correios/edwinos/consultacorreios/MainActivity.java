@@ -5,10 +5,14 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.correios.edwinos.consultacorreios.util.database.CorreiosDataBase;
+import com.correios.edwinos.consultacorreios.util.database.CorreiosEntity;
+import com.correios.edwinos.consultacorreios.util.database.Entity;
 import com.correios.edwinos.consultacorreios.util.json.JsonParser;
 import com.correios.edwinos.consultacorreios.util.list.ItemListModel;
 import com.correios.edwinos.consultacorreios.util.list.ListAdapter;
@@ -16,6 +20,7 @@ import com.correios.edwinos.consultacorreios.util.list.ListAdapter;
 
 public class MainActivity extends ListActivity {
     protected ItemListModel preAdded;
+    protected CorreiosDataBase correiosObjectsData;
 
     public static final int INSERT_ACTION = 1;
     public static final int VERIFY_ACTION = 2;
@@ -25,12 +30,20 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
         ListAdapter adapter = new ListAdapter(this);
+        this.correiosObjectsData = new CorreiosDataBase(this, "com.correios.edwinos.consultacorreios.util.database.CorreiosEntity");
 
-        /**
-         * INICIALIZANDO COM DADOS FICTICIOS
-         */
-        for (int i = 0; i < 5; i++){
-            adapter.add(new ItemListModel("CODE-"+i, "Nome Item "+i));
+        Entity[] data = this.correiosObjectsData.fetchAll();
+        if(data != null && data.length > 0){
+
+            Log.d("Events", "Dados retornados do banco: " + data.length);
+            for (int i = 0; i < data.length; i++){
+                Log.d("Events", "Item: "+i+"; Id: "+((CorreiosEntity) data[i]).getId()+"; Code"+((CorreiosEntity) data[i]).getCode());
+                adapter.add(new ItemListModel((CorreiosEntity) data[i]));
+            }
+
+        }
+        else{
+            Log.d("Events", "Banco de dados vazio");
         }
 
         setListAdapter(adapter);
@@ -38,7 +51,7 @@ public class MainActivity extends ListActivity {
 
     protected void onListItemClick(android.widget.ListView l, android.view.View v, int position, long id){
         ListAdapter adapter = (ListAdapter) l.getAdapter();
-        Toast.makeText(this, "Selecionado: " + adapter.getItem(position).getFrendlyName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Selecionado: " + adapter.getItem(position).getFrendlyName()+" - "+adapter.getItem(position).getId(), Toast.LENGTH_SHORT).show();
     }
 
 
