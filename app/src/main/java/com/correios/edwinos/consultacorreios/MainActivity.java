@@ -19,7 +19,11 @@ import com.correios.edwinos.consultacorreios.util.list.ListAdapter;
 
 
 public class MainActivity extends ListActivity {
-    protected ItemListModel preAdded;
+
+    protected String preAddedCode;
+    protected String preAddedName;
+    protected String preAddedJson;
+
     protected CorreiosDataBase correiosObjectsData;
 
     public static final int INSERT_ACTION = 1;
@@ -78,17 +82,20 @@ public class MainActivity extends ListActivity {
         switch (requestCode) {
             case INSERT_ACTION:
                 if(resultCode == RESULT_OK) {
-                    this.preAdded = new ItemListModel(data.getStringExtra("code"), data.getStringExtra("name"));
-                    this.verifyCode(this.preAdded.getCode());
+                    this.preAddedName = data.getStringExtra("name");
+                    this.preAddedCode = data.getStringExtra("code");
+
+                    this.verifyCode(this.preAddedCode);
                 }
             break;
             case VERIFY_ACTION:
 
                 if(resultCode == RESULT_OK) {
-                    JsonParser jsonResponse = new JsonParser(data.getStringExtra("response"));
+                    this.preAddedJson = data.getStringExtra("response");
+                    JsonParser jsonResponse = new JsonParser(this.preAddedJson);
 
                     if(!jsonResponse.isSuccess()){
-                        this.preAdded = null;
+                        this.resetPreAdd();
                         this.showErrorDialog("Houve um problema na consulta", jsonResponse.getMessage());
                     }
                     else if (jsonResponse.getTotal() <= 0){
@@ -99,7 +106,7 @@ public class MainActivity extends ListActivity {
                     }
                 }
                 else{
-                    this.preAdded = null;
+                    this.resetPreAdd();
                     this.showErrorDialog("Houve um problema na consulta", "A comunicação com o servidor falhou.\n\nVerifique se você está conectado a internet.");
                 }
 
@@ -108,9 +115,28 @@ public class MainActivity extends ListActivity {
         }
     }
 
+    protected void resetPreAdd(){
+        this.preAddedCode = null;
+        this.preAddedName = null;
+        this.preAddedJson = null;
+    }
+
     public void confirmAdd(){
-        ((ListAdapter) this.getListAdapter()).add(this.preAdded);
-        this.preAdded = null;
+        CorreiosEntity newObject = new CorreiosEntity();
+
+        newObject.setCode(this.preAddedCode);
+        newObject.setName(this.preAddedName);
+        newObject.setJson_data(this.preAddedJson);
+
+        if(!this.correiosObjectsData.insert(newObject)){
+            this.showErrorDialog("Erro ao Registrar Objeto", this.getError(this.correiosObjectsData.getErrorMessage()));
+        }
+        else {
+            newObject = (CorreiosEntity) this.correiosObjectsData.select("code='"+this.preAddedCode+"'")[0];
+            ((ListAdapter) this.getListAdapter()).add(new ItemListModel(newObject));
+        }
+
+        this.resetPreAdd();
     }
 
     protected void verifyCode(String code){
@@ -122,6 +148,15 @@ public class MainActivity extends ListActivity {
     }
 
 
+    protected String getError(String errorMessage){
+        if(errorMessage.equals("column code is not unique (code 19)")){
+            return "O objeto com código \""+this.preAddedCode+"\" já está cadastrado!";
+        }
+        else {
+            return "Erro na pessistencia do banco de dados";
+        }
+    }
+
     protected void showDataEmptyDialog(){
         new AlertDialog.Builder(this).setTitle("Nenhuma informação sobre o objeto")
                                      .setMessage("Nenhuma informação sobre o rastreamento do objeto foi encontrada pelos correios.\nÉ possivel que o objeto ainda não tenha entrado no sistema dos correios.\n\nDeseja mesmo assim adiciona-lo a lista?")
@@ -132,7 +167,7 @@ public class MainActivity extends ListActivity {
                                      })
                                      .setNegativeButton("Não", new DialogInterface.OnClickListener() {
                                          public void onClick(DialogInterface dialog, int which) {
-                                             preAdded = null;
+                                             resetPreAdd();
                                              dialog.cancel();
                                          }
                                      })
