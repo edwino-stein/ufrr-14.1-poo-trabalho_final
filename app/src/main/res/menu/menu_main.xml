@@ -1,6 +1,7 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 >
     <item
         android:id="@+id/action_add"
@@ -9,14 +10,25 @@
         android:showAsAction="ifRoom"
     />
     <item
-        android:id="@+id/action_reset"
-        android:title="Limpar Lista"
-        android:showAsAction="collapseActionView"
-    />
-    <item
-        android:id="@+id/action_about"
-        android:title="Sobre"
-        android:icon="@drawable/ic_action_about"
-        android:showAsAction="collapseActionView"
-    />
+        android:title="Menu"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha"
+        >
+        <menu>
+            <item
+                android:id="@+id/action_reset"
+                android:title="Limpar Lista"
+                android:icon="@drawable/ic_action_remove_circle_outline"
+                app:showAsAction="collapseActionView"
+            />
+            <item
+                android:id="@+id/action_about"
+                android:title="Sobre"
+                android:icon="@drawable/ic_action_about"
+                app:showAsAction="collapseActionView"
+            />
+        </menu>
+    </item>
+
 </menu>
