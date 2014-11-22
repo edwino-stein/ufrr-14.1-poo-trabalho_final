@@ -40,6 +40,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.correios.edwinos.consultacorreios.DataViewActivity"
+            android:label="@string/title_activity_data_view" >
+
+            <intent-filter>
+                <action android:name="com.correios.edwinos.consultacorreios.DataViewActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
