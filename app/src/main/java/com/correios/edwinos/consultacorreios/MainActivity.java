@@ -55,7 +55,10 @@ public class MainActivity extends ListActivity {
 
     protected void onListItemClick(android.widget.ListView l, android.view.View v, int position, long id){
         ListAdapter adapter = (ListAdapter) l.getAdapter();
-        Toast.makeText(this, "Selecionado: " + adapter.getItem(position).getFrendlyName()+" - "+adapter.getItem(position).getId(), Toast.LENGTH_SHORT).show();
+
+        Intent dataViewIntent = new Intent("com.correios.edwinos.consultacorreios.DataViewActivity");
+        dataViewIntent.putExtra("code", adapter.getItem(position).getCode());
+        startActivity(dataViewIntent);
     }
 
 
