@@ -1,5 +1,7 @@
 package com.correios.edwinos.consultacorreios.util.json;
 
+import com.correios.edwinos.consultacorreios.R;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,6 +23,15 @@ public class CorreiosData {
     protected String situacao;
     protected int estado;
     protected String  detalhes;
+
+    public CorreiosData(boolean emptyValues){
+        if(emptyValues){
+            this.id = -1;
+            this.estado = -1;
+            this.situacao = "Aguardando postagem...";
+            this.detalhes = "A postagem leva em média um dia útil para ser registrado no sistema dos correios.\nOBS.: Verifique se o código está correto.";
+        }
+    }
 
     public CorreiosData(JSONObject data){
 
@@ -122,5 +133,18 @@ public class CorreiosData {
     @Override
     public String toString(){
         return "id: "+this.id+"; data: "+this.data +"; local: "+this.local+"; situacao: "+this.situacao;
+    }
+
+    public int getThumbStatusRes(){
+        int drawableId = R.drawable.icon_waiting_status;
+
+        switch (this.estado){
+            case 0: drawableId = R.drawable.icon_info_status; break;
+            case 1: drawableId = R.drawable.icon_success_status; break;
+            case 2: drawableId = R.drawable.icon_warning_status; break;
+            case 3: drawableId = R.drawable.icon_error_status; break;
+        }
+
+        return drawableId;
     }
 }
