@@ -1,14 +1,13 @@
 package com.correios.edwinos.consultacorreios;
 
-import android.app.AlertDialog;
 import android.app.ListActivity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.correios.edwinos.consultacorreios.util.Dialog;
 import com.correios.edwinos.consultacorreios.util.database.CorreiosDataBase;
 import com.correios.edwinos.consultacorreios.util.database.CorreiosEntity;
 import com.correios.edwinos.consultacorreios.util.database.Entity;
@@ -17,7 +16,7 @@ import com.correios.edwinos.consultacorreios.util.list.ItemListModel;
 import com.correios.edwinos.consultacorreios.util.list.ListAdapter;
 
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends ListActivity implements Dialog.DialogResult {
 
     protected String preAddedCode;
     protected String preAddedName;
@@ -28,6 +27,8 @@ public class MainActivity extends ListActivity {
     public static final int INSERT_ACTION = 1;
     public static final int VERIFY_ACTION = 2;
     public static final int VIEW_DATA = 3;
+
+    public static final int INSERT_QUESTION = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,18 +93,17 @@ public class MainActivity extends ListActivity {
 
                     if(!jsonResponse.isSuccess()){
                         this.resetPreAdd();
-                        this.showErrorDialog("Houve um problema na consulta", jsonResponse.getMessage());
+                        Dialog.alertDialog(this, "Houve um problema na consulta", jsonResponse.getMessage());
                     }
                     else if (jsonResponse.getTotal() <= 0){
-                        this.showDataEmptyDialog();
-
+                        Dialog.questionDialog(this, INSERT_QUESTION, "Nenhuma informação sobre o objeto", "Nenhuma informação sobre o rastreamento do objeto foi encontrada pelos correios.\nÉ possivel que o objeto ainda não tenha entrado no sistema dos correios.\n\nDeseja mesmo assim adiciona-lo a lista?" );
                     }else {
                         this.confirmAdd();
                     }
                 }
                 else{
                     this.resetPreAdd();
-                    this.showErrorDialog("Houve um problema na consulta", "A comunicação com o servidor falhou.\n\nVerifique se você está conectado a internet.");
+                    Dialog.alertDialog(this, "Houve um problema na consulta", "A comunicação com o servidor falhou.\n\nVerifique se você está conectado a internet.");
                 }
             break;
 
@@ -149,7 +149,7 @@ public class MainActivity extends ListActivity {
         newObject.setJson_data(this.preAddedJson);
 
         if(!this.correiosObjectsData.insert(newObject)){
-            this.showErrorDialog("Erro ao Registrar Objeto", this.getError(this.correiosObjectsData.getErrorMessage()));
+            Dialog.alertDialog(this, "Erro ao Registrar Objeto", this.getError(this.correiosObjectsData.getErrorMessage()));
         }
         else {
             newObject = (CorreiosEntity) this.correiosObjectsData.select("code='"+this.preAddedCode+"'")[0];
@@ -177,31 +177,17 @@ public class MainActivity extends ListActivity {
         }
     }
 
-    protected void showDataEmptyDialog(){
-        new AlertDialog.Builder(this).setTitle("Nenhuma informação sobre o objeto")
-                                     .setMessage("Nenhuma informação sobre o rastreamento do objeto foi encontrada pelos correios.\nÉ possivel que o objeto ainda não tenha entrado no sistema dos correios.\n\nDeseja mesmo assim adiciona-lo a lista?")
-                                     .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            confirmAdd();
-                                        }
-                                     })
-                                     .setNegativeButton("Não", new DialogInterface.OnClickListener() {
-                                         public void onClick(DialogInterface dialog, int which) {
-                                             resetPreAdd();
-                                             dialog.cancel();
-                                         }
-                                     })
-                                     .show();
-    }
+    @Override
+    public void onDialogResult(int index, boolean result) {
+        switch (index){
+            case INSERT_QUESTION:
+                if(result){
+                    confirmAdd();
+                } else{
+                    resetPreAdd();
+                }
 
-    protected void showErrorDialog(String title, String textBody){
-        new AlertDialog.Builder(this).setTitle(title)
-                                     .setMessage(textBody)
-                                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                         public void onClick(DialogInterface dialog, int which) {
-                                             dialog.cancel();
-                                         }
-                                     })
-                                     .show();
+            break;
+        }
     }
 }
