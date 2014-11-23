@@ -72,6 +72,7 @@ public class MainActivity extends ListActivity implements Dialog.DialogResult {
 
         if(id == R.id.action_about){
             Dialog.alertDialog(this, "Sobre", "Aplicativo desenvolvido por:\nEdwino Stein - edwino.stein@ufrr.br\n");
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

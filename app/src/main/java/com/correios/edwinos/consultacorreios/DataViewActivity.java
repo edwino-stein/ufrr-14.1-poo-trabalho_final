@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.correios.edwinos.consultacorreios.util.Dialog;
 import com.correios.edwinos.consultacorreios.util.card.CorreiosEventAdapter;
 import com.correios.edwinos.consultacorreios.util.database.CorreiosDataBase;
 import com.correios.edwinos.consultacorreios.util.database.CorreiosEntity;
@@ -17,9 +18,11 @@ import com.correios.edwinos.consultacorreios.util.json.CorreiosData;
 import com.correios.edwinos.consultacorreios.util.json.JsonParser;
 
 
-public class DataViewActivity extends Activity {
+public class DataViewActivity extends Activity implements Dialog.DialogResult {
 
     public static final int UPDATE_DATA = 1;
+    public static final int DELETE_DATA = 2;
+
 
     protected String code;
     protected CorreiosEntity entity;
@@ -78,6 +81,10 @@ public class DataViewActivity extends Activity {
             return true;
         }
 
+        if(id == R.id.action_delete){
+            Dialog.questionDialog(this, DELETE_DATA, "Excluir", "Deseja realmente excluir o objeto \""+this.code+"\"?");
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -148,5 +155,26 @@ public class DataViewActivity extends Activity {
         emptyData[0] = new CorreiosData(true);
 
         return emptyData;
+    }
+
+
+    protected void deleteObject(){
+        if(!this.correiosObjectsData.delete("code=\""+this.code+"\"")){
+            Dialog.alertDialog(this, "Erro ao Excluir", "Ocorreu um erro ao tentar excluir o objeto \""+this.code+"\".\n\nErro: "+this.correiosObjectsData.getErrorMessage());
+        }
+        else{
+            this.finish();
+        }
+    }
+
+    @Override
+    public void onDialogResult(int index, boolean result) {
+        switch (index){
+            case DELETE_DATA:
+                if(result) {
+                    this.deleteObject();
+                }
+            break;
+        }
     }
 }
