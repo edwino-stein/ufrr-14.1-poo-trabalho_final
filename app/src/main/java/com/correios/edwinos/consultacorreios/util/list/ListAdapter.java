@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.correios.edwinos.consultacorreios.R;
+import com.correios.edwinos.consultacorreios.util.DateParser;
 
 import java.util.ArrayList;
 
@@ -43,8 +45,23 @@ public class ListAdapter extends ArrayAdapter<ItemListModel> {
         ItemListModel itemData = this.items.get(position);
         Log.d("Events", "Renderizando ("+position+"): "+itemData.getCode());
 
-        ((TextView) itemListView.findViewById(R.id.itemListCode)).setText(itemData.getCode());
-        ((TextView) itemListView.findViewById(R.id.itemListFrendlyName)).setText(itemData.getFrendlyName());
+        if(itemData.getFrendlyName().isEmpty()){
+            ((TextView) itemListView.findViewById(R.id.itemListCode)).setVisibility(View.GONE);
+            ((TextView) itemListView.findViewById(R.id.itemListFrendlyName)).setText(itemData.getCode());
+        } else{
+            ((TextView) itemListView.findViewById(R.id.itemListCode)).setText(itemData.getCode());
+            ((TextView) itemListView.findViewById(R.id.itemListFrendlyName)).setText(itemData.getFrendlyName());
+        }
+
+        ((ImageView) itemListView.findViewById(R.id.listItemIcon)).setImageResource(itemData.getLastData().getThumbStatusRes());
+        ((TextView) itemListView.findViewById(R.id.last_status)).setText(itemData.getLastData().getSituacao());
+
+        if(itemData.getLastData().getData() != null) {
+            ((TextView) itemListView.findViewById(R.id.last_date)).setText(DateParser.dataToString(itemData.getLastData().getData()));
+        }
+        else{
+            ((TextView) itemListView.findViewById(R.id.last_date)).setVisibility(View.GONE);
+        }
 
         return itemListView;
     }

@@ -16,29 +16,48 @@
     />
 
     <TextView
-        android:id="@+id/itemListCode"
-        android:layout_width="fill_parent"
-        android:layout_height="26dip"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/listItemIcon"
-        android:ellipsize="marquee"
-        android:singleLine="true"
-        android:text="Codigo do item"
-        android:textSize="12sp"
-    />
+        android:id="@+id/itemListFrendlyName"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_alignWithParentIfMissing="true"
+        android:gravity="center_vertical"
+        android:text="NOME AMIGAVEL"
+        android:textSize="16sp"
+        android:layout_toEndOf="@+id/listItemIcon"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/listItemIcon" />
 
     <TextView
-        android:id="@+id/itemListFrendlyName"
-        android:layout_width="fill_parent"
+        android:id="@+id/itemListCode"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/itemListCode"
+        android:singleLine="true"
+        android:text="CÓDIGO"
+        android:textSize="13sp"
+        android:layout_alignBaseline="@+id/itemListFrendlyName"
+        android:layout_alignBottom="@+id/itemListFrendlyName"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/listItemIcon"
-        android:gravity="center_vertical"
-        android:text="Nome Amigavel do item"
-        android:textSize="16sp"
-    />
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ULTIMA SITUAÇÃO"
+        android:id="@+id/last_status"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:layout_below="@+id/itemListFrendlyName"
+        android:layout_toRightOf="@+id/listItemIcon"
+        android:layout_toEndOf="@+id/listItemIcon" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ULTIMA DATA"
+        android:id="@+id/last_date"
+        android:textSize="12sp"
+        android:layout_below="@+id/itemListFrendlyName"
+        android:layout_alignParentRight="true"
+        />
+
 </RelativeLayout>
