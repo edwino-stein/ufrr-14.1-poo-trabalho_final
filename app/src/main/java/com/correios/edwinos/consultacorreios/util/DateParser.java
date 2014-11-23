@@ -12,6 +12,10 @@ public class DateParser {
         return date.getDate()+" de "+DateParser.getMouthName(date)+" de "+getYear(date);
     }
 
+    public static String dataToString(Date date){
+        return date.getDate()+"/"+date.getMonth()+"/"+getYear(date);
+    }
+
     public static int getYear(Date date){
         return date.getYear()+1900;
     }
