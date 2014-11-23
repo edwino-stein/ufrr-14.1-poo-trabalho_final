@@ -4,25 +4,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.correios.edwinos.consultacorreios.R;
 import com.correios.edwinos.consultacorreios.util.DateParser;
 import com.correios.edwinos.consultacorreios.util.json.CorreiosData;
 
-import org.json.JSONException;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
 /**
  * Created by edwinos on 20/11/14.
  */
 
-/**
- * TODO: Arrumar as cores dos estados e a data
- */
+
 public class CorreiosEventAdapter extends RecyclerView.Adapter<CorreiosEventViewHolder>{
 
     private CorreiosData[] dataList;
@@ -45,16 +37,7 @@ public class CorreiosEventAdapter extends RecyclerView.Adapter<CorreiosEventView
         CorreiosData data = this.dataList[i];
 
         correiosEventViewHolder.vStatus.setText(data.getSituacao());
-
-
-
-        correiosEventViewHolder.vDateTime.setText(
-                DateParser.getWeekDayName(data.getData())+", "+
-                DateParser.fullDataToString(data.getData())+" às "+
-                DateParser.getHour(data.getData())
-        );
-
-        correiosEventViewHolder.vLocal.setText(data.getLocal());
+        correiosEventViewHolder.vStatusThumb.setImageResource(data.getThumbStatusRes());
 
         if(data.getDetalhes() != null) {
             correiosEventViewHolder.vDetails.setText(data.getDetalhes());
@@ -62,10 +45,41 @@ public class CorreiosEventAdapter extends RecyclerView.Adapter<CorreiosEventView
         else{
             correiosEventViewHolder.vDetails.setVisibility(View.GONE);
         }
+
+
+        if(data.getEstado() >= 0){
+
+            correiosEventViewHolder.vDateTime.setText(
+                    DateParser.getWeekDayName(data.getData()) + ", " +
+                            DateParser.fullDataToString(data.getData()) + " às " +
+                            DateParser.getHour(data.getData())
+            );
+
+            correiosEventViewHolder.vLocal.setText(data.getLocal());
+
+        } else{
+            this.renderSimpleCard(correiosEventViewHolder);
+        }
     }
 
     @Override
     public int getItemCount() {
         return dataList.length;
+    }
+
+
+    protected void renderSimpleCard(CorreiosEventViewHolder correiosEventViewHolder){
+
+        correiosEventViewHolder.vLocal.setVisibility(View.GONE);
+        correiosEventViewHolder.vDateTime.setVisibility(View.GONE);
+
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.removeRule(RelativeLayout.ALIGN_LEFT);
+        params.removeRule(RelativeLayout.ALIGN_TOP);
+        params.addRule(RelativeLayout.RIGHT_OF, R.id.statusThumb);
+        params.setMarginStart(20);
+
+        correiosEventViewHolder.vStatus.setLayoutParams(params);
     }
 }

@@ -7,12 +7,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.correios.edwinos.consultacorreios.util.card.CorreiosEventAdapter;
 import com.correios.edwinos.consultacorreios.util.database.CorreiosDataBase;
 import com.correios.edwinos.consultacorreios.util.database.CorreiosEntity;
-import com.correios.edwinos.consultacorreios.util.database.Entity;
+import com.correios.edwinos.consultacorreios.util.json.CorreiosData;
 import com.correios.edwinos.consultacorreios.util.json.JsonParser;
 
 
@@ -36,7 +35,15 @@ public class DataViewActivity extends Activity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         this.setTitle(this.code, this.entity.getName());
 
-        CorreiosEventAdapter adapter = new CorreiosEventAdapter(json.getData());
+        CorreiosEventAdapter adapter;
+
+        if(json.getTotal() > 0) {
+            adapter = new CorreiosEventAdapter(json.getData());
+        }
+        else{
+            adapter = new CorreiosEventAdapter(this.getEmptyData());
+        }
+
         this.getRecyclerView().setAdapter(adapter);
 
     }
@@ -84,5 +91,14 @@ public class DataViewActivity extends Activity {
         }
 
         return this.recyclerView;
+    }
+
+    protected CorreiosData[] getEmptyData(){
+
+        CorreiosData[] emptyData = new CorreiosData[1];
+
+        emptyData[0] = new CorreiosData(true);
+
+        return emptyData;
     }
 }
