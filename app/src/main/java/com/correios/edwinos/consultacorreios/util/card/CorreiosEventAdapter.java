@@ -1,5 +1,6 @@
 package com.correios.edwinos.consultacorreios.util.card;
 
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,13 +74,15 @@ public class CorreiosEventAdapter extends RecyclerView.Adapter<CorreiosEventView
         correiosEventViewHolder.vLocal.setVisibility(View.GONE);
         correiosEventViewHolder.vDateTime.setVisibility(View.GONE);
 
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.removeRule(RelativeLayout.ALIGN_LEFT);
+            params.removeRule(RelativeLayout.ALIGN_TOP);
+            params.addRule(RelativeLayout.RIGHT_OF, R.id.statusThumb);
+            params.setMarginStart(20);
+            correiosEventViewHolder.vStatus.setLayoutParams(params);
+        }
 
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.removeRule(RelativeLayout.ALIGN_LEFT);
-        params.removeRule(RelativeLayout.ALIGN_TOP);
-        params.addRule(RelativeLayout.RIGHT_OF, R.id.statusThumb);
-        params.setMarginStart(20);
 
-        correiosEventViewHolder.vStatus.setLayoutParams(params);
     }
 }
