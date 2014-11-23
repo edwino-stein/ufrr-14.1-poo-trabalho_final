@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.correios.edwinos.consultacorreios.util.DateParser;
 import com.correios.edwinos.consultacorreios.util.Dialog;
 import com.correios.edwinos.consultacorreios.util.card.CorreiosEventAdapter;
 import com.correios.edwinos.consultacorreios.util.database.CorreiosDataBase;
@@ -85,6 +86,14 @@ public class DataViewActivity extends Activity implements Dialog.DialogResult {
             Dialog.questionDialog(this, DELETE_DATA, "Excluir", "Deseja realmente excluir o objeto \""+this.code+"\"?");
             return true;
         }
+
+        if(id == R.id.action_object_about){
+
+            this.aboutObject();
+
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -176,5 +185,17 @@ public class DataViewActivity extends Activity implements Dialog.DialogResult {
                 }
             break;
         }
+    }
+
+    protected void aboutObject(){
+        String body;
+
+        JsonParser json = new JsonParser(this.entity.getJson_data());
+
+        body  = " - Total de ocorrências: "+json.getTotal()+"\n";
+        body += " - Atualizado em: "+ DateParser.dataToString(json.getData(0).getData())+ " às "+DateParser.getHour(json.getData(0).getData())+"\n";
+        body += " - Entregue: "+ (json.getData(0).getEstado() == 1 ? "Sim" : "Não" )+"\n";
+
+        Dialog.alertDialog(this, this.code, body);
     }
 }
