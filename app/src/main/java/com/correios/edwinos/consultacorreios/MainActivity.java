@@ -158,7 +158,7 @@ public class MainActivity extends ListActivity implements Dialog.DialogResult {
         }
         else {
             newObject = (CorreiosEntity) this.correiosObjectsData.select("code='"+this.preAddedCode+"'")[0];
-            ((ListAdapter) this.getListAdapter()).add(new ItemListModel(newObject));
+            this.update();
         }
 
         this.resetPreAdd();
