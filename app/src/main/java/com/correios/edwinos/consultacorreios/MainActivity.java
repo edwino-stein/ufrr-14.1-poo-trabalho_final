@@ -29,6 +29,7 @@ public class MainActivity extends ListActivity implements Dialog.DialogResult {
     public static final int VIEW_DATA = 3;
 
     public static final int INSERT_QUESTION = 10;
+    public static final int RESET_QUESTION = 11;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +65,8 @@ public class MainActivity extends ListActivity implements Dialog.DialogResult {
         }
 
         if(id == R.id.action_reset){
-            this.correiosObjectsData.clearAll();
-            ((ListAdapter) this.getListAdapter()).clear();
+
+            Dialog.questionDialog(this, RESET_QUESTION, "Remover tudo", "Você tem certeza que deseja remover todos os itens da lista?");
             return true;
         }
 
@@ -186,7 +187,13 @@ public class MainActivity extends ListActivity implements Dialog.DialogResult {
                 } else{
                     resetPreAdd();
                 }
+            break;
 
+            case RESET_QUESTION:
+                if(result){
+                    this.correiosObjectsData.clearAll();
+                    ((ListAdapter) this.getListAdapter()).clear();
+                }
             break;
         }
     }
