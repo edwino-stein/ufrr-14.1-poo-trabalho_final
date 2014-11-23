@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.correios.edwinos.consultacorreios.util.database.CorreiosDataBase;
 import com.correios.edwinos.consultacorreios.util.database.CorreiosEntity;
@@ -33,24 +32,9 @@ public class MainActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ListAdapter adapter = new ListAdapter(this);
         this.correiosObjectsData = new CorreiosDataBase(this, "com.correios.edwinos.consultacorreios.util.database.CorreiosEntity");
 
-        Entity[] data = this.correiosObjectsData.fetchAll();
-        if(data != null && data.length > 0){
-
-            Log.d("Events", "Dados retornados do banco: " + data.length);
-            for (int i = 0; i < data.length; i++){
-                Log.d("Events", "Item: "+i+"; Id: "+((CorreiosEntity) data[i]).getId()+"; Code"+((CorreiosEntity) data[i]).getCode());
-                adapter.add(new ItemListModel((CorreiosEntity) data[i]));
-            }
-
-        }
-        else{
-            Log.d("Events", "Banco de dados vazio");
-        }
-
-        setListAdapter(adapter);
+        this.update();
     }
 
     protected void onListItemClick(android.widget.ListView l, android.view.View v, int position, long id){
@@ -123,6 +107,28 @@ public class MainActivity extends ListActivity {
 
             break;
         }
+    }
+
+    protected void update(){
+
+        ListAdapter adapter = new ListAdapter(this);
+        Entity[] data = this.correiosObjectsData.fetchAll();
+
+        if(data != null && data.length > 0){
+            Log.d("Events", "Dados retornados do banco: " + data.length);
+
+            for (int i = 0; i < data.length; i++){
+                Log.d("Events", "Item: "+i+"; Id: "+((CorreiosEntity) data[i]).getId()+"; Code"+((CorreiosEntity) data[i]).getCode());
+                adapter.add(new ItemListModel((CorreiosEntity) data[i]));
+            }
+
+        }
+        else{
+            Log.d("Events", "Banco de dados vazio");
+        }
+
+        setListAdapter(adapter);
+
     }
 
     protected void resetPreAdd(){
