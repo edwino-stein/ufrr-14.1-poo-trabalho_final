@@ -27,6 +27,7 @@ public class MainActivity extends ListActivity {
 
     public static final int INSERT_ACTION = 1;
     public static final int VERIFY_ACTION = 2;
+    public static final int VIEW_DATA = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class MainActivity extends ListActivity {
 
         Intent dataViewIntent = new Intent("com.correios.edwinos.consultacorreios.DataViewActivity");
         dataViewIntent.putExtra("code", adapter.getItem(position).getCode());
-        startActivity(dataViewIntent);
+        startActivityForResult(dataViewIntent, MainActivity.VIEW_DATA);
     }
 
 
@@ -82,6 +83,7 @@ public class MainActivity extends ListActivity {
                     this.verifyCode(this.preAddedCode);
                 }
             break;
+
             case VERIFY_ACTION:
 
                 if(resultCode == RESULT_OK) {
@@ -103,8 +105,10 @@ public class MainActivity extends ListActivity {
                     this.resetPreAdd();
                     this.showErrorDialog("Houve um problema na consulta", "A comunicação com o servidor falhou.\n\nVerifique se você está conectado a internet.");
                 }
+            break;
 
-
+            case VIEW_DATA:
+                this.update();
             break;
         }
     }

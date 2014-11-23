@@ -2,11 +2,13 @@ package com.correios.edwinos.consultacorreios;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.correios.edwinos.consultacorreios.util.card.CorreiosEventAdapter;
 import com.correios.edwinos.consultacorreios.util.database.CorreiosDataBase;
@@ -17,9 +19,12 @@ import com.correios.edwinos.consultacorreios.util.json.JsonParser;
 
 public class DataViewActivity extends Activity {
 
+    public static final int UPDATE_DATA = 1;
+
     protected String code;
     protected CorreiosEntity entity;
     protected RecyclerView recyclerView;
+    protected CorreiosDataBase correiosObjectsData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +32,10 @@ public class DataViewActivity extends Activity {
         setContentView(R.layout.activity_data_view);
 
         this.code = getIntent().getStringExtra("code");
-
-        CorreiosDataBase correiosObjectsData = new CorreiosDataBase(this, "com.correios.edwinos.consultacorreios.util.database.CorreiosEntity");
+        this.correiosObjectsData = new CorreiosDataBase(this, "com.correios.edwinos.consultacorreios.util.database.CorreiosEntity");
         this.entity = (CorreiosEntity) correiosObjectsData.select("code='"+this.code+"'")[0];
+
+
         JsonParser json = new JsonParser(this.entity.getJson_data());
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -59,11 +65,53 @@ public class DataViewActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        if(id == R.id.action_refresh){
+            Intent requestIntent = new Intent("com.correios.edwinos.consultacorreios.RequestActivity");
+            requestIntent.putExtra("code", this.code);
+
+            startActivityForResult(requestIntent, DataViewActivity.UPDATE_DATA);
+            return true;
+        }
+
         if(id == android.R.id.home){
             this.finish();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        switch (requestCode) {
+            case DataViewActivity.UPDATE_DATA:
+                if(resultCode == RESULT_OK){
+                    this.updateData(data.getStringExtra("response"));
+                }
+                else{
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                }
+            break;
+        }
+    }
+
+    protected void updateData(String response){
+
+        this.entity.setJson_data(response);
+
+        this.correiosObjectsData.update(this.entity, "code=\""+this.code+"\"");
+
+        JsonParser json = new JsonParser(response);
+        CorreiosEventAdapter adapter;
+
+        if(json.getTotal() > 0) {
+            adapter = new CorreiosEventAdapter(json.getData());
+        }
+        else{
+            adapter = new CorreiosEventAdapter(this.getEmptyData());
+        }
+
+        this.getRecyclerView().setAdapter(adapter);
     }
 
     protected void setTitle(String code, String frendlyName){
