@@ -13,28 +13,47 @@ public class CorreiosDataBase{
     protected SQLiteDatabase dataBase;
     protected String dataBaseName = "correios";
     protected String entity;
+    protected Context context;
 
     protected String errorMessage;
 
     public CorreiosDataBase(){}
 
     public CorreiosDataBase(Context context, String entity){
-        this.dataBase = context.openOrCreateDatabase(this.dataBaseName, SQLiteDatabase.CREATE_IF_NECESSARY, null);
+        this.dataBase = null;
+        this.context = context;
         this.entity = entity;
+
         this.initTable();
     }
 
+    protected void open(){
+        this.dataBase = this.context.openOrCreateDatabase(this.dataBaseName, SQLiteDatabase.CREATE_IF_NECESSARY, null);
+    }
+
+    protected void close(){
+
+        if(this.dataBase != null){
+            this.dataBase.close();
+            this.dataBase = null;
+        }
+    }
+
     protected boolean tableExistis(String tableName){
+        this.open();
         Cursor c = this.dataBase.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='"+tableName+"'", null);
 
         if(c == null){
+            this.close();
             return false;
         }
 
         if(c.getCount() <= 0){
+            this.close();
             return  false;
         }
 
+        this.close();
         return true;
     }
 
@@ -42,7 +61,9 @@ public class CorreiosDataBase{
         Entity entity = this.getEntityInstance();
 
         if(!this.tableExistis(entity.getTableName())){
+            this.open();
             this.dataBase.execSQL("CREATE TABLE "+entity.getTableName()+" (" +entity.getEntityModel()+ ")");
+            this.close();
         }
     }
 
@@ -70,15 +91,18 @@ public class CorreiosDataBase{
             return null;
         }
 
+        this.open();
         Cursor queryResult = this.dataBase.rawQuery("SELECT * FROM " + entity.getTableName(), null);
 
         if(queryResult == null){
+            this.close();
             return null;
         }
 
         Entity[] data = new Entity[queryResult.getCount()];
 
         if(!queryResult.moveToFirst()){
+            this.close();
             return data;
         }
 
@@ -90,11 +114,13 @@ public class CorreiosDataBase{
             i++;
         }while (queryResult.moveToNext());
 
-
+        this.close();
         return data;
     }
 
     public boolean insert(Entity entity){
+
+        this.open();
 
         try {
             this.dataBase.insertOrThrow(entity.getTableName(), null, entity.getValues());
@@ -102,22 +128,29 @@ public class CorreiosDataBase{
         }catch (SQLiteConstraintException e){
             e.printStackTrace();
             this.errorMessage = e.getMessage();
+
+            this.close();
             return false;
         }
 
+        this.close();
         return true;
     }
 
     public Entity[] select(String where){
+
+        this.open();
         Cursor queryResult = this.dataBase.rawQuery("SELECT * FROM " + this.getEntityInstance().getTableName() + " WHERE " + where, null);
 
         if(queryResult == null){
+            this.close();
             return null;
         }
 
         Entity[] data = new Entity[queryResult.getCount()];
 
         if(!queryResult.moveToFirst()){
+            this.close();
             return data;
         }
 
@@ -129,34 +162,45 @@ public class CorreiosDataBase{
             i++;
         }while (queryResult.moveToNext());
 
-
+        this.close();
         return data;
     }
 
     public boolean delete(String where){
 
+        this.open();
         if(this.dataBase.delete(this.getEntityInstance().getTableName(), where, null) >= 1){
+            this.close();
             return true;
         }
 
+        this.close();
         return false;
     }
 
     public boolean update(Entity entity, String where){
 
+        this.open();
         if(this.dataBase.update(this.getEntityInstance().getTableName(), entity.getValues(), where, null) >= 1){
+            this.close();
             return true;
         }
 
+        this.close();
         return false;
     }
 
     public void clearAll(){
-        this.dataBase.execSQL("DROP TABLE "+this.getEntityInstance().getTableName());
+
+        this.open();
+        this.dataBase.execSQL("DROP TABLE " + this.getEntityInstance().getTableName());
+        this.close();
+
         this.initTable();
     }
 
     public String getErrorMessage() {
         return errorMessage;
     }
+
 }
