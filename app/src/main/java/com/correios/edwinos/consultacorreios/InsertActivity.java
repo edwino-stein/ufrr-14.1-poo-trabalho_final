@@ -16,14 +16,6 @@ public class InsertActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert);
-
-        /** DEBUB **/
-        ((EditText) findViewById(R.id.frendlyName)).setText("VALOR DE DEBUB #"+(this.debugCouter++));
-        EditText codeObj = (EditText) findViewById(R.id.codeObj);
-        codeObj.setText("DF959840044BR");
-        codeObj.setSelectAllOnFocus(true);
-        codeObj.requestFocus();
-        /***********/
     }
 
 
@@ -43,8 +35,9 @@ public class InsertActivity extends Activity {
     }
 
     public void onOkBtnClicked(View v){
+
         String frendlyName = ((EditText) findViewById(R.id.frendlyName)).getText().toString();
-        String codeObj = ((EditText) findViewById(R.id.codeObj)).getText().toString();
+        String codeObj = ((EditText) findViewById(R.id.codeObj)).getText().toString().toUpperCase();
 
         if(!this.codeObjIsValid(codeObj)){
             Toast.makeText(this, "O código informado é inválido", Toast.LENGTH_SHORT).show();
@@ -67,17 +60,11 @@ public class InsertActivity extends Activity {
 
     protected boolean codeObjIsValid(String code){
 
-        /**
-         * TODO: Fazer a validação do codigo de objeto
-         */
+        if(code.length() != 13){
+            return false;
+        }
+
 
         return true;
-        /*
-        if(code.length() == 3) {
-            return true;
-        }
-        else{
-            return false;
-        }*/
     }
 }
