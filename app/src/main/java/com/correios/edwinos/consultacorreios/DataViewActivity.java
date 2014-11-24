@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.correios.edwinos.consultacorreios.util.DateParser;
 import com.correios.edwinos.consultacorreios.util.Dialog;
@@ -102,10 +101,12 @@ public class DataViewActivity extends Activity implements Dialog.DialogResult {
         switch (requestCode) {
             case DataViewActivity.UPDATE_DATA:
                 if(resultCode == RESULT_OK){
+
                     this.updateData(data.getStringExtra("response"));
+
                 }
                 else{
-                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                    Dialog.alertDialog(this, "Houve um problema na consulta", "A comunicação com o servidor falhou.\n\nVerifique se você está conectado a internet.");
                 }
             break;
         }
