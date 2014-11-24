@@ -7,22 +7,22 @@
 
     <item
         android:id="@+id/action_refresh"
-        android:title="Atualizar"
+        android:title="@string/action_refresh"
         android:icon="@drawable/ic_action_refresh"
         android:orderInCategory="100"
         android:showAsAction="ifRoom"
     />
 
     <item
-        android:title="Menu"
         android:orderInCategory="100"
         android:showAsAction="ifRoom"
+        android:title="@string/action_menu"
         android:icon="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha"
     >
         <menu>
             <item
                 android:id="@+id/action_delete"
-                android:title="Excluir"
+                android:title="@string/action_delete"
                 android:orderInCategory="100"
                 android:icon="@drawable/ic_action_delete"
                 app:showAsAction="always|withText"
@@ -30,7 +30,7 @@
 
             <item
                 android:id="@+id/action_object_about"
-                android:title="Sobre o Objeto"
+                android:title="@string/action_object_about"
                 android:icon="@drawable/ic_action_about"
                 android:orderInCategory="100"
                 app:showAsAction="always|withText"

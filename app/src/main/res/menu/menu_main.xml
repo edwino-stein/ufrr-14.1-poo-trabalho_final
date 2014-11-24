@@ -6,25 +6,25 @@
     <item
         android:id="@+id/action_add"
         android:icon="@drawable/ic_action_new"
-        android:title="Registrar Objeto"
+        android:title="@string/action_add"
         android:showAsAction="ifRoom"
     />
     <item
-        android:title="Menu"
         android:orderInCategory="100"
+        android:title="@string/action_menu"
         android:showAsAction="ifRoom"
         android:icon="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha"
         >
         <menu>
             <item
                 android:id="@+id/action_reset"
-                android:title="Limpar Lista"
+                android:title="@string/action_reset"
                 android:icon="@drawable/ic_action_remove_circle_outline"
                 app:showAsAction="collapseActionView"
             />
             <item
                 android:id="@+id/action_about"
-                android:title="Sobre"
+                android:title="@string/action_about"
                 android:icon="@drawable/ic_action_about"
                 app:showAsAction="collapseActionView"
             />

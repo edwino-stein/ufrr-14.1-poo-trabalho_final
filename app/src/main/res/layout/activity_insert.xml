@@ -10,8 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Nome Amigavel"
-        android:id="@+id/frendlyNameLable"
+        android:text="@string/frendlyNameLabel"
         android:id="@+id/frendlyNameLabel"
         android:layout_alignParentTop="true"
     />
@@ -20,8 +19,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/frendlyName"
-        android:hint="Ex.: Encomenda de Paçoca"
-        android:layout_below="@+id/frendlyNameLable"
+        android:hint="@string/frendlyNameSample"
         android:layout_below="@+id/frendlyNameLabel"
     />
 
@@ -29,8 +27,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Código do Objeto"
-        android:id="@+id/codeObjLable"
+        android:text="@string/codeObjLabel"
         android:id="@+id/codeObjLabel"
         android:layout_below="@+id/frendlyName"
         android:layout_marginTop="16dp"
@@ -40,8 +37,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/codeObj"
-        android:hint="AAXXXXXXXXXBR"
-        android:layout_below="@+id/codeObjLable"
+        android:hint="@string/codeObjSample"
         android:layout_below="@+id/codeObjLabel"
       />
 
@@ -56,20 +52,22 @@
 
         <Button
             android:layout_height="wrap_content"
-            android:text="Registrar"
+            android:text="@string/cancelBtn"
+            android:id="@+id/cancelBtn"
+            android:layout_weight=".5"
+            android:layout_width="0dip"
+            android:onClick="onCancelBtnClicked"
+            />
+
+        <Button
+            android:layout_height="wrap_content"
+            android:text="@string/okBtn"
             android:id="@+id/okBtn"
             android:layout_weight=".5"
             android:layout_width="0dip"
             android:onClick="onOkBtnClicked"
         />
-        <Button
-            android:layout_height="wrap_content"
-            android:text="Cancelar"
-            android:id="@+id/cancelBtn"
-            android:layout_weight=".5"
-            android:layout_width="0dip"
-            android:onClick="onCancelBtnClicked"
-        />
+
     </LinearLayout>
 
 </RelativeLayout>

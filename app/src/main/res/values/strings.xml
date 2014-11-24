@@ -2,10 +2,27 @@
 <resources>
 
     <string name="app_name">Consulta Correios</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
     <string name="title_activity_insert">Registrar Objeto</string>
-    <string name="title_activity_request">Verificando com o servidor</string>
+    <string name="title_activity_request">Verificando com o Servidor</string>
     <string name="title_activity_data_view">DataView</string>
+
+    <string name="action_add">Registrar Objeto</string>
+    <string name="action_reset">Limpar Lista</string>
+    <string name="action_about">Sobre o Aplicativo</string>
+
+    <string name="action_menu">Mais Opções</string>
+
+    <string name="action_refresh">Atualizar</string>
+    <string name="action_delete">Excluir</string>
+    <string name="action_object_about">Sobre o Objeto</string>
+
+    <string name="frendlyNameLabel">Nome Amigavel</string>
+    <string name="frendlyNameSample">Ex.: Encomenda de Paçoca</string>
+    <string name="codeObjLabel">Código do Objeto</string>
+    <string name="codeObjSample">ABXXXXXXXXXBR</string>
+    <string name="okBtn">Registrar</string>
+    <string name="cancelBtn">Cancelar</string>
+
+    <string name="waitingText">Por favor, aguarde...</string>
 
 </resources>
